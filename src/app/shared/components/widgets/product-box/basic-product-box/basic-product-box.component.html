@@ -1,0 +1,84 @@
+<div class="product-box" [class]="class">
+
+    <!-- Status / discount badges -->
+    <div class="badge-stack">
+        <span class="badge-pill discount-badge" *ngIf="product.discount">-{{ product.discount }}%</span>
+        <span class="badge-pill sale-badge" *ngIf="product.is_sale_enable && !product.discount">{{ 'sale' | translate }}</span>
+        <span class="badge-pill trending-badge" *ngIf="product.is_trending && !product.is_sale_enable && !product.discount">{{ 'trending' | translate }}</span>
+    </div>
+
+    <!-- Image -->
+    <div class="product-image">
+        <a [routerLink]="['/product/', product.slug]" class="product-image-link">
+            <img [src]="product.product_thumbnail ?
+                        product.product_thumbnail.original_url :
+                        'assets/images/product.png'" class="img-fluid" [alt]="product.name || 'product'">
+        </a>
+
+        <!-- Top-right floating actions -->
+        <div class="floating-actions">
+            <button type="button"
+                    *ngIf="close"
+                    class="float-action-btn close-action"
+                    (click)="removeWishlist(product.id)"
+                    [attr.aria-label]="'Remove from wishlist'">
+                <i class="ri-close-line"></i>
+            </button>
+            <button type="button"
+                    *ngIf="!close"
+                    class="float-action-btn wishlist-action"
+                    [class.active]="product.is_wishlist"
+                    (click)="addToWishlist(product)"
+                    [attr.aria-label]="product.is_wishlist ? 'Remove from wishlist' : 'Add to wishlist'">
+                <i class="ri-heart-{{ product.is_wishlist ? 'fill' : 'line' }}"></i>
+            </button>
+        </div>
+
+        <!-- Bottom-center quick view (revealed on hover) -->
+        <button type="button"
+                *ngIf="!close"
+                class="quick-view-btn"
+                (click)="productDetailModal.openModal()"
+                [attr.aria-label]="'Quick view'">
+            <i class="ri-eye-line"></i>
+            <span>Quick View</span>
+        </button>
+    </div>
+
+    <!-- Details -->
+    <div class="product-detail">
+        <a [routerLink]="['/product/', product.slug]" class="product-title-link">
+            <h6 class="product-title" [title]="product.name">{{ product.name }}</h6>
+        </a>
+
+        <div class="product-rating">
+            <ngb-rating [rate]="product.rating_count || 0"></ngb-rating>
+            <span class="rating-value">({{ (product.rating_count || 0) | number:'1.1-1' }})</span>
+        </div>
+
+        <div class="product-price-row">
+            <h5 class="product-price">
+                <span class="price">{{ product.sale_price | currencySymbol }}</span>
+                <del *ngIf="product.discount" class="original-price">{{ product.price | currencySymbol }}</del>
+            </h5>
+        </div>
+
+        <div class="add-to-cart-section">
+            <ng-container *ngIf="cartItem; else addToCartButton">
+                <app-button [class]="'btn btn-add-to-cart in-cart'" [spinner]="false" (click)="viewCart()">
+                    <i class="ri-shopping-bag-line"></i>
+                    <span>View Cart</span>
+                </app-button>
+            </ng-container>
+            <ng-template #addToCartButton>
+                <app-button [class]="'btn btn-add-to-cart'" [spinner]="false" (click)="openCartPopupModal()">
+                    <i class="ri-shopping-bag-line"></i>
+                    <span>Add to Cart</span>
+                </app-button>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<app-product-detail-modal #productDetailModal [product]="product"></app-product-detail-modal>
+<app-variation-modal #variationModal></app-variation-modal>
+<app-cart-popup-modal #cartPopupModal></app-cart-popup-modal>

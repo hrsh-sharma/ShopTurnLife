@@ -1,0 +1,105 @@
+<section class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-12">
+                <app-alert></app-alert>
+                <div class="auth-card">
+
+                    <!-- Header -->
+                    <div class="auth-card-header">
+                        <div class="auth-icon">
+                            <i class="ri-user-3-line"></i>
+                        </div>
+                        <h2 class="auth-title">{{ 'Welcome Back' | translate }}</h2>
+                        <p class="auth-subtitle">{{ 'Sign in to continue to your account' | translate }}</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+
+                        <!-- Email -->
+                        <div class="form-field">
+                            <label class="field-label" for="email">
+                                {{ 'Email Address' | translate }} <span class="required">*</span>
+                            </label>
+                            <div class="input-box" [class.invalid]="form.controls['email'].touched && form.controls['email'].invalid">
+                                <i class="ri-mail-line field-icon"></i>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    formControlName="email"
+                                    placeholder="{{ 'you@example.com' | translate }}"
+                                    (keydown)="allowOnlyEmailChars($event)"
+                                    (input)="sanitizeEmailInput($event)"
+                                    (paste)="sanitizeEmailPaste($event)">
+                            </div>
+                            <span *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['required']" class="field-error">
+                                {{ 'Email address is required' | translate }}
+                            </span>
+                            <span *ngIf="form.controls['email'].touched && form.controls['email'].errors?.['email']" class="field-error">
+                                {{ 'Please enter a valid email address' | translate }}
+                            </span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-field">
+                            <div class="field-label-row">
+                                <label class="field-label" for="password">
+                                    {{ 'Password' | translate }} <span class="required">*</span>
+                                </label>
+                                <a [routerLink]="['/auth/forgot-password']" class="forgot-link">
+                                    {{ 'Forgot password?' | translate }}
+                                </a>
+                            </div>
+                            <div class="input-box" [class.invalid]="form.controls['password'].touched && form.controls['password'].invalid">
+                                <i class="ri-lock-line field-icon"></i>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    formControlName="password"
+                                    placeholder="{{ 'Enter your password' | translate }}">
+                            </div>
+                            <span *ngIf="form.controls['password'].touched && form.controls['password'].errors?.['required']" class="field-error">
+                                {{ 'Password is required' | translate }}
+                            </span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="remember-row">
+                            <label class="checkbox-label">
+                                <input class="checkbox-input" type="checkbox" id="rememberMe">
+                                <span>{{ 'Remember Me' | translate }}</span>
+                            </label>
+                        </div>
+
+                        <!-- reCAPTCHA -->
+                        <div class="recaptcha-box" *ngIf="reCaptcha">
+                            <re-captcha formControlName="recaptcha"></re-captcha>
+                            <span *ngIf="form.controls['recaptcha']?.touched && form.controls['recaptcha']?.errors?.['required']" class="field-error">
+                                {{ 'Please complete the verification' | translate }}
+                            </span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="submit-wrapper">
+                            <app-button
+                                [id]="'login_btn'"
+                                [disabled]="form.invalid"
+                                [class.btn-disabled]="form.invalid">
+                                {{ 'Sign In' | translate }}
+                            </app-button>
+                        </div>
+
+                    </form>
+
+                    <!-- Footer -->
+                    <p class="auth-footer-text">
+                        {{ 'New to our store?' | translate }}
+                        <a [routerLink]="['/auth/register']" class="auth-link">{{ 'Create an account' | translate }}</a>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

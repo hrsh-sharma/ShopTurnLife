@@ -1,0 +1,314 @@
+<!-- Home Section Start -->
+
+<!-- Hero Image Start -->
+<section class="hero-image-section pt-0">
+    <div class="container-fluid">
+        <div class="hero-image">
+            <img src="assets/images/hero-banner-image.png" alt="Shop Turn Life Hero Banner" class="img-fluid w-100"
+                loading="eager" fetchpriority="high" width="1600" height="400">
+        </div>
+    </div>
+</section>
+<!-- Hero Image End -->
+
+<!-- Features Banner Section Start -->
+<section class="features-banner-section">
+    <div class="features-banner-bg"></div>
+    <div class="container-fluid outer">
+        <div class="features-banner-box">
+            <div class="row g-0">
+                <div class="col-md-4 col-12">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="assets/images/trending.png" alt="Trending Fashion Styles Icon" class="img-fluid"
+                                width="40" height="40">
+                        </div>
+                        <div class="feature-text">
+                            <span>Trending Fashion Styles</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="assets/images/quality.png" alt="100% Quality Checked Icon" class="img-fluid"
+                                width="40" height="40">
+                        </div>
+                        <div class="feature-text">
+                            <span>100% Quality Checked</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="assets/images/price.png" alt="Lowest Prices Icon" class="img-fluid" width="40"
+                                height="40">
+                        </div>
+                        <div class="feature-text">
+                            <span>Lowest Prices</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Features Banner Section End -->
+
+<!-- Category Section Start -->
+<section class="cat-section">
+    <div class="container-fluid px-lg-5 px-3">
+        <div class="cat-header">
+            <h3 class="cat-title">Shop By Category</h3>
+            <p class="cat-subtitle">Explore our curated collections</p>
+        </div>
+        <div class="cat-grid">
+            <div class="cat-card" (click)="selectCategory('jeans', $event)">
+                <div class="cat-img-area">
+                    <img src="assets/images/Jeans.png" alt="Denim" loading="lazy">
+                </div>
+                <div class="cat-label">
+                    <span class="cat-name">Denim</span>
+                    <span class="cat-shop-link">Shop Now <i class="ri-arrow-right-line"></i></span>
+                </div>
+            </div>
+            <div class="cat-card" (click)="selectCategory('shirt', $event)">
+                <div class="cat-img-area">
+                    <img src="assets/images/shirt.png" alt="Shirt" loading="lazy">
+                </div>
+                <div class="cat-label">
+                    <span class="cat-name">Shirt</span>
+                    <span class="cat-shop-link">Shop Now <i class="ri-arrow-right-line"></i></span>
+                </div>
+            </div>
+            <div class="cat-card" (click)="selectCategory('t-shirts', $event)">
+                <div class="cat-img-area">
+                    <img src="assets/images/tshirt.png" alt="Tees" loading="lazy">
+                </div>
+                <div class="cat-label">
+                    <span class="cat-name">Tees</span>
+                    <span class="cat-shop-link">Shop Now <i class="ri-arrow-right-line"></i></span>
+                </div>
+            </div>
+            <div class="cat-card" (click)="selectCategory('sherwani-sets', $event)">
+                <div class="cat-img-area">
+                    <img src="assets/images/Sherwani.png" alt="Sherwani" loading="lazy">
+                </div>
+                <div class="cat-label">
+                    <span class="cat-name">Sherwani</span>
+                    <span class="cat-shop-link">Shop Now <i class="ri-arrow-right-line"></i></span>
+                </div>
+            </div>
+            <div class="cat-card" (click)="selectCategory('kurtas', $event)">
+                <div class="cat-img-area">
+                    <img src="assets/images/Kurta.png" alt="Kurta" loading="lazy">
+                </div>
+                <div class="cat-label">
+                    <span class="cat-name">Kurta</span>
+                    <span class="cat-shop-link">Shop Now <i class="ri-arrow-right-line"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Category Section End -->
+
+<!-- Featured Product Section Start -->
+<section class="featured-product-section section-b-space">
+    <div class="container-fluid">
+        <div class="section-t-space">
+            <app-theme-product [productIds]="topFeaturedIds" [style]="'horizontal'"
+                [showItem]="4">
+            </app-theme-product>
+        </div>
+    </div>
+</section>
+<!-- Featured Product Section End -->
+
+<!-- Gold Promotional Banner Section Start -->
+<section class="gold-promotional-section">
+    <div class="container-fluid">
+        <div class="gold-promotional-wrapper">
+            <div class="gold-main-banner">
+                <div class="gold-banner-image">
+                    <img src="assets/images/gold-banner.png" alt="Shop Turn Life Gold Promotional Banner"
+                        class="img-fluid" width="1200" height="400" loading="lazy">
+                </div>
+                <!-- Categories Overlay - Top Right -->
+                <div class="gold-categories-overlay">
+                    <div class="gold-categories-grid">
+                        <div class="gold-category-card" (click)="selectCategory('ethnic-jackets', $event)"
+                            style="cursor: pointer;">
+                            <div class="gold-category-image-wrapper">
+                                <div class="gold-category-image-bg"></div>
+                                <img src="assets/images/ethnic-jacket.png" alt="Ethnic Jackets Collection"
+                                    class="gold-category-image" width="150" height="150" loading="lazy">
+                            </div>
+                            <div class="gold-category-label">
+                                <span>Etchic Jackets</span>
+                            </div>
+                        </div>
+                        <div class="gold-category-card" (click)="selectCategory('lehenga-choli-sets', $event)"
+                            style="cursor: pointer;">
+                            <div class="gold-category-image-wrapper">
+                                <div class="gold-category-image-bg"></div>
+                                <img src="assets/images/img-3.png" alt="Sarees Collection" class="gold-category-image"
+                                    width="150" height="150" loading="lazy">
+                            </div>
+                            <div class="gold-category-label">
+                                <span>Sarees</span>
+                            </div>
+                        </div>
+                        <div class="gold-category-card" (click)="selectCategory('sherwani-sets', $event)"
+                            style="cursor: pointer;">
+                            <div class="gold-category-image-wrapper">
+                                <div class="gold-category-image-bg"></div>
+                                <img src="assets/images/img-2.png" alt="Wedding Wear Collection"
+                                    class="gold-category-image" width="150" height="150" loading="lazy">
+                            </div>
+                            <div class="gold-category-label">
+                                <span>Wedding Wears</span>
+                            </div>
+                        </div>
+                        <div class="gold-category-card" (click)="selectCategory('lehenga-choli-sets', $event)"
+                            style="cursor: pointer;">
+                            <div class="gold-category-image-wrapper">
+                                <div class="gold-category-image-bg"></div>
+                                <img src="assets/images/img-5.png" alt="Lehenga Collection" class="gold-category-image"
+                                    width="150" height="150" loading="lazy">
+                            </div>
+                            <div class="gold-category-label">
+                                <span>Lehanga</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Gold Promotional Banner Section End -->
+
+<!-- SEO Content Section Start -->
+<section class="home-seo-section">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="seo-content-box text-center">
+                    <h1 class="seo-title">Trending Fashion for Men and Women Online</h1>
+                    <p class="seo-description">
+                        Shop Turn Life is an online fashion store offering trendy clothing for men and women.
+                        Discover stylish outfits, casual wear, and modern fashion designed for everyday comfort.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- SEO Content Section End -->
+
+<!-- Featured Product Section Start -->
+<section class="featured-product-section section-b-space">
+    <div class="container-fluid">
+        <div class="section-t-space">
+            <div class="collection-heading" style="text-align: left; margin-bottom: 20px;">
+                <h2 style="font-weight: 700; color: inherit; margin: 0;">Featured Collection</h2>
+            </div>
+            <app-theme-product [productIds]="bottomFeaturedIds" [style]="'horizontal'"
+                [showItem]="4">
+            </app-theme-product>
+        </div>
+    </div>
+</section>
+<!-- Featured Product Section End -->
+
+<!-- App Promotional Banner Section Start -->
+<section class="app-promotional-section">
+    <div class="container-fluid">
+        <div class="app-promotional-wrapper">
+            <div class="row g-0">
+                <!-- Left Side - Orange Discount Section -->
+                <div class="col-lg-4 col-md-12">
+                    <div class="app-discount-section">
+                        <div class="app-discount-content">
+                            <div class="app-discount-label">Up to</div>
+                            <div class="app-discount-amount">35% OFF</div>
+                            <div class="app-discount-subtext">on first order</div>
+                            <div class="app-discount-note">*Only on Shopturnlife.com</div>
+                            <button class="app-download-btn" routerLink="/collections">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Side - Purple Categories Section -->
+                <div class="col-lg-8 col-md-12">
+                    <div class="app-categories-section">
+                        <div class="app-categories-grid">
+                            <!-- Women Jeans -->
+                            <div class="app-category-panel" (click)="selectCategory('women-s-jeans', $event)"
+                                style="cursor: pointer;">
+                                <div class="app-category-image-wrapper">
+                                    <img src="assets/images/women-jeans.png" alt="Women's Jeans Collection"
+                                        class="app-category-image" width="300" height="400" loading="lazy">
+                                </div>
+                                <button class="app-category-btn">Women Jeans</button>
+                            </div>
+                            <!-- Winter Men -->
+                            <div class="app-category-panel" (click)="selectCategory('winter-essentials', $event)"
+                                style="cursor: pointer;">
+                                <div class="app-category-image-wrapper">
+                                    <img src="assets/images/winter-men.png" alt="Men's Winter Wear"
+                                        class="app-category-image" width="300" height="400" loading="lazy">
+                                </div>
+                                <button class="app-category-btn">Winter Men</button>
+                            </div>
+                            <!-- Winter Main -->
+                            <div class="app-category-panel" (click)="selectCategory('winter-essentials', $event)"
+                                style="cursor: pointer;">
+                                <div class="app-category-image-wrapper">
+                                    <img src="assets/images/winter-main.png" alt="Women's Winter Collection"
+                                        class="app-category-image" width="300" height="400" loading="lazy">
+                                </div>
+                                <button class="app-category-btn">Winter Women</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- App Promotional Banner Section End -->
+
+<!-- Collection Page Section with Filters Start -->
+<section class="section-b-space shop-section" id="filtered_products">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-custome-3">
+                <div class="left-box">
+                    <app-collection-sidebar [filter]="filter"></app-collection-sidebar>
+                </div>
+            </div>
+            <div class="col-custome-9">
+                <div class="collection-heading" style="text-align: left; margin-bottom: 20px;">
+                    <h2 style="font-weight: 700; color: inherit; margin: 0;">Products For You</h2>
+                </div>
+                <app-collection-products [filter]="filter"></app-collection-products>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Collection Page Section with Filters End -->
+
+<!-- Shop Turn Life Banner End -->
+<!-- Category Section Start -->
+<section *ngIf="data?.content?.categories_icon_list?.status">
+    <div class="container-fluid">
+        <app-theme-categories [style]="'horizontal'" [theme]="'paris'" [sliderOption]="categorySlider"
+            [categoryIds]="data?.content?.categories_icon_list?.category_ids || []"
+            [image]="data?.content?.categories_icon_list?.image_url">
+        </app-theme-categories>
+    </div>
+</section>
+<!-- Category Section End -->

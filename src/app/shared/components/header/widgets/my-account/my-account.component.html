@@ -1,0 +1,48 @@
+<!-- My Account Basic Style -->
+<div *ngIf="style == 'basic'" class="profile-icon-wrapper" [class.dropdown-hidden]="hideDropdown">
+    <div class="delivery-login-box simple-icon-box">
+        <div class="delivery-icon">
+            <i class="ri-user-line" *ngIf="!(isAuthenticated$ | async) else profile"></i>
+            <ng-template #profile>
+                <i class="ri-user-line"></i>
+            </ng-template>
+        </div>
+        <span class="icon-label">{{ 'Profile' | translate }}</span>
+    </div>
+    <div class="onhover-div onhover-div-login">
+        <div class="user-auth-box" *ngIf="!(isAuthenticated$ | async)">
+            <div class="auth-avatar">
+                <i class="ri-user-3-line"></i>
+            </div>
+            <h3 class="auth-title">Welcome</h3>
+            <p class="auth-subtitle">Sign in to access your account & orders</p>
+            <a [routerLink]="['/auth/login']" class="auth-signin-btn">{{ 'sign_in' | translate }}</a>
+            <div class="auth-divider"><span>New here?</span></div>
+            <a [routerLink]="['/auth/register']" class="auth-signup-btn">{{ 'sign_up' | translate }}</a>
+        </div>
+        <div class="user-auth-box authenticated-box" *ngIf="(isAuthenticated$ | async)">
+            <h3 class="auth-title">{{ 'hello' | translate }}</h3>
+            <p class="auth-subtitle" style="color: #6B7280; font-size: 14px; margin: 0 0 16px 0;">Welcome back to your account</p>
+            <ul class="user-box-name">
+<li class="product-box-contain">
+                    <a [routerLink]="['/account/order']"><i class="ri-shopping-bag-line me-2"></i> {{ 'My Orders' | translate }}</a>
+                </li>
+                <li class="product-box-contain">
+                    <a [routerLink]="['/account/addresses']"><i class="ri-home-4-line me-2"></i> {{ 'Saved Address' | translate }}</a>
+                </li>
+                <li class="product-box-contain">
+                    <a [routerLink]="['/account/dashboard']"><i class="ri-user-settings-line me-2"></i> {{ 'Profile' | translate }}</a>
+                </li>
+                <li class="product-box-contain">
+                    <a href="javascript:void(0)" (click)="openLogoutConfirmation()"><i class="ri-logout-circle-r-line me-2"></i> {{ 'Logout' | translate }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<app-confirmation-modal
+    #confirmationModal
+    (confirmed)="logout()"
+    (dismissed)="onModalDismissed()">
+</app-confirmation-modal>

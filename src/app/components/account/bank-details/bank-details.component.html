@@ -1,0 +1,67 @@
+<div class="refund-policy-container">
+
+  <!-- Header -->
+  <div class="refund-policy-header">
+    <div class="header-icon">
+      <i class="ri-refund-2-line"></i>
+    </div>
+    <div class="header-text">
+      <h2>{{ 'Refund Policy' | translate }}</h2>
+      <p>{{ 'How refunds are processed on ShopTurn Life' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Online Payments -->
+  <div class="policy-card">
+    <div class="policy-card-icon online">
+      <i class="ri-bank-card-line"></i>
+    </div>
+    <div class="policy-card-body">
+      <h4>{{ 'Online Payments' | translate }}</h4>
+      <p>
+        {{ 'Refunds for payments made via Credit Card, Debit Card, UPI, or Net Banking are automatically credited back to your original payment method.' | translate }}
+      </p>
+      <div class="policy-timeline">
+        <i class="ri-time-line"></i>
+        <span>{{ 'Processed within 5–7 business days' | translate }}</span>
+      </div>
+      <div class="policy-note success">
+        <i class="ri-shield-check-line"></i>
+        {{ 'No action required from your side. Refunds are fully automated.' | translate }}
+      </div>
+    </div>
+  </div>
+
+  <!-- COD Orders -->
+  <div class="policy-card">
+    <div class="policy-card-icon cod">
+      <i class="ri-hand-coin-line"></i>
+    </div>
+    <div class="policy-card-body">
+      <h4>{{ 'Cash on Delivery (COD) Orders' | translate }}</h4>
+      <p>
+        {{ 'For returns on COD orders, bank account details will be collected securely at the time of submitting your return request via a one-time secure link.' | translate }}
+      </p>
+      <div class="policy-note info">
+        <i class="ri-information-line"></i>
+        {{ 'Your bank details are only requested at the point of the return — never stored in advance.' | translate }}
+      </div>
+    </div>
+  </div>
+
+  <!-- RBI Compliance Notice -->
+  <div class="compliance-notice">
+    <i class="ri-government-line"></i>
+    <p>{{ 'In compliance with RBI guidelines, all prepaid refunds are processed back to the original source of payment. We do not collect or store sensitive financial information.' | translate }}</p>
+  </div>
+
+  <!-- Help -->
+  <div class="policy-help">
+    <i class="ri-customer-service-2-line"></i>
+    <div>
+      <span>{{ 'Need help with a refund?' | translate }}</span>
+      <a routerLink="/Contact-Us">{{ 'Contact our support team' | translate }}</a>
+    </div>
+  </div>
+
+</div>
