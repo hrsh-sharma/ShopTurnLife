@@ -146,6 +146,38 @@ $orange-dark: #a85d2a;
   }
 }
 
+.policy-retention-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 25px;
+
+  li {
+    background: #f8f9fa;
+    border-left: 4px solid $primary-teal;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #495057;
+    transition: border-color 0.3s ease, background 0.3s ease;
+
+    &:hover {
+      border-left-color: $secondary-orange;
+      background: #fff8f4;
+    }
+
+    strong {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .policy-contact-section {
   background: #f8f9fa;
   padding: 30px;
