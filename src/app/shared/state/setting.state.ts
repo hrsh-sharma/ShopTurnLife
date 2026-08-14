@@ -112,13 +112,13 @@ export class SettingState {
               },
               {
                 name: 'turnlife_nabu_airpay',
-                status: true,
+                status: false,
                 title: 'Pay by Airpay',
                 icon: './assets/images/airpay.png',
               },
               {
                 name: 'turnlife_jio',
-                status: true,
+                status: false,
                 title: 'Pay by Jio',
                 icon: './assets/images/logo.png',
               },
