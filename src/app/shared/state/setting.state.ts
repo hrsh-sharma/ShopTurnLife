@@ -108,7 +108,7 @@ export class SettingState {
                 name: 'neoKred2',
                 status: false,
                 title: 'Pay By UPI INTENT2',
-                // icon: './assets/images/payment/pay_by_qr.png',
+                // icon:'./assets/images/payment/pay_by_qr.png',
               },
               {
                 name: 'turnlife_nabu_airpay',
