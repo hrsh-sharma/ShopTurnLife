@@ -85,7 +85,6 @@
               <th>{{ 'Price' | translate }}</th>
               <th>{{ 'Quantity' | translate }}</th>
               <th>{{ 'Subtotal' | translate }}</th>
-              <th>{{ 'Refund Status' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -110,33 +109,6 @@
               </td>
               <td class="product-subtotal-cell">
                 <span class="subtotal">{{ product?.pivot?.subtotal | currencySymbol }}</span>
-              </td>
-              <td class="product-refund-cell">
-                <a class="btn btn-refund" 
-                   href="javascript:void(0)"
-                   *ngIf="product?.is_return === 1 &&
-                          order?.payment_status && order?.payment_status === 'COMPLETED' 
-                          && order.order_status && order.order_status.slug == 'delivered' && 
-                          !product?.pivot?.refund_status;"
-                   (click)="RefundModal.openModal(product, order.id)">
-                  {{ 'Refund' | translate }}
-                </a>
-                <ng-container *ngIf="product.is_return === 0; else refundStatus">
-                  <span class="refund-badge non-refundable">Non Refundable</span>
-                </ng-container>
-                <ng-template #refundStatus>
-                  <div class="refund-badge status-{{product?.pivot?.refund_status?.toLowerCase()}}" 
-                       *ngIf="product?.pivot?.refund_status; else disabledRefund">
-                    <span>{{ product?.pivot?.refund_status | titleCase }}</span>
-                  </div>
-                  <ng-template #disabledRefund>
-                    <div placement="top" class="black-tooltip" ngbTooltip="Enable after delivery">
-                      <a class="btn btn-refund disabled" *ngIf="!product?.pivot?.refund_status">
-                        {{ 'Refund' | translate }}
-                      </a>
-                    </div>
-                  </ng-template>
-                </ng-template>
               </td>
             </tr>
           </tbody>
@@ -185,7 +157,8 @@
             <label>{{ 'Payment Mode' | translate }}:</label>
             <div class="detail-value">
               <span *ngIf="order?.payment_method === 'Shop Trurn Life_nabu'">Pay By UPI INTENT 3</span>
-              <span *ngIf="order?.payment_method !== 'Shop Trurn Life_nabu'">{{ order.payment_method | uppercase }}</span>
+              <span *ngIf="order?.payment_method?.toLowerCase()?.includes('jio')">Jio UPI Payment</span>
+              <span *ngIf="order?.payment_method !== 'Shop Trurn Life_nabu' && !order?.payment_method?.toLowerCase()?.includes('jio')">{{ order.payment_method | uppercase }}</span>
             </div>
           </div>
           <div class="detail-item" *ngIf="order?.payment_status">

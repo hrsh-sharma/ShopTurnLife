@@ -119,7 +119,7 @@ export class SettingState {
               {
                 name: 'jio_turnlifezest',
                 status: true,
-                title: 'Pay by UPI/QR',
+                title: 'Jio UPI Payment',
                 icon: './assets/images/jio-pay1.png',
               },
 

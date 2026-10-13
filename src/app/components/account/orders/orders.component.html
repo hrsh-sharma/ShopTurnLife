@@ -45,7 +45,8 @@
                 <td>
                   <span class="payment-method">
                     <span *ngIf="order?.payment_method === 'Shop Trurn Life_nabu'">Pay By UPI INTENT 3</span>
-                    <span *ngIf="order?.payment_method !== 'Shop Trurn Life_nabu'">{{
+                    <span *ngIf="order?.payment_method?.toLowerCase()?.includes('jio')">Jio UPI Payment</span>
+                    <span *ngIf="order?.payment_method !== 'Shop Trurn Life_nabu' && !order?.payment_method?.toLowerCase()?.includes('jio')">{{
                       order?.payment_method?.toUpperCase() }}</span>
                   </span>
                 </td>
