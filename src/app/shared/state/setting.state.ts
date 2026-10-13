@@ -117,10 +117,10 @@ export class SettingState {
                 icon: './assets/images/airpay.png',
               },
               {
-                name: 'turnlife_jio',
-                status: false,
-                title: 'Pay by Jio',
-                icon: './assets/images/logo.png',
+                name: 'jio_turnlifezest',
+                status: true,
+                title: 'Pay by UPI/QR',
+                icon: './assets/images/jio-pay1.png',
               },
 
             ];

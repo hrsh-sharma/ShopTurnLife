@@ -113,8 +113,17 @@
         display: block;
     }
 
+    .payment-icon-qr {
+        height: 22px;
+        width: 22px;
+        object-fit: contain;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
     .payment-icon.payment-icon-jio {
-        max-height: 45px;
+        max-height: 42px;
+        max-width: 150px;
     }
 }
 

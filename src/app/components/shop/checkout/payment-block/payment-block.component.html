@@ -16,11 +16,15 @@
                         <!-- Payment title + icon -->
                         <div class="payment-info">
                             <span class="payment-title">{{ payment.title || payment.name }}</span>
+                            <img *ngIf="payment.name === 'turnlife_jio' || payment.name === 'jio_turnlifezest' || payment.name === 'jio_turnlifezest'"
+                                 src="assets/images/QR-code.png"
+                                 alt="QR Code"
+                                 class="payment-icon-qr">
                             <img *ngIf="payment.icon"
                                  [src]="payment.icon"
                                  [alt]="payment.name"
                                  class="payment-icon"
-                                 [class.payment-icon-jio]="payment.name === 'turnlife_jio'">
+                                 [class.payment-icon-jio]="payment.name === 'turnlife_jio' || payment.name === 'jio_turnlifezest' || payment.name === 'jio_turnlifezest'">
                         </div>
                     </div>
                 </label>

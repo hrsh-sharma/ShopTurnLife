@@ -405,7 +405,7 @@
                                                     <app-loader [loaderClass]="'custom-loader-wrapper blur-bg'"></app-loader>
                                                 </div>
 
-                                                <div class="summary-breakdown">
+                                                <div class="summary-breakdown" *ngIf="!qrCodeData">
                                                     <div class="breakdown-item">
                                                         <span class="breakdown-label">{{ 'Subtotal' | translate }}</span>
                                                         <span class="breakdown-value">
@@ -433,6 +433,7 @@
                                                 </div>
 
                                                 <app-button
+                                                    *ngIf="!qrCodeData"
                                                     [class]="'btn-pay-now pay-now-btn'"
                                                     [id]="'place_order'"
                                                     [disabled]="loading || !(form.valid && checkoutTotal)">
@@ -440,6 +441,53 @@
                                                     {{ 'Pay Now' | translate }}
                                                     <i class="ri-arrow-right-line ms-2"></i>
                                                 </app-button>
+
+                                                <!-- Inline UPI QR Section (Shown when qrCodeData is active) -->
+                                                <div class="upi-qr-inline-section" *ngIf="qrCodeData">
+                                                    <!-- Title -->
+                                                    <div class="upi-qr-heading">
+                                                        <h5 class="upi-qr-title text-center w-100">Pay by any UPI app</h5>
+                                                    </div>
+
+                                                    <!-- QR Code Image Container -->
+                                                    <div class="upi-qr-image-wrap">
+                                                        <img [src]="qrCodeData.qrCode" alt="UPI QR Code" class="upi-qr-image">
+                                                    </div>
+                                                    <p class="upi-qr-hint">Scan via any UPI app</p>
+
+                                                    <!-- Clickable UPI App Icons (Hidden on desktop >= 992px, visible on mobile) -->
+                                                    <div class="upi-app-icons-bottom mt-2 d-lg-none" *ngIf="qrCodeData.paymentUrl">
+                                                        <a [href]="qrCodeData.phonepeUrl" class="upi-icon-link">
+                                                            <img src="assets/images/phonepay.png" alt="PhonePe" class="upi-app-icon-large" title="PhonePe">
+                                                        </a>
+                                                        <a [href]="qrCodeData.gpayUrl" class="upi-icon-link">
+                                                            <img src="assets/images/g-pay.png" alt="Google Pay" class="upi-app-icon-large" title="Google Pay">
+                                                        </a>
+                                                        <a [href]="qrCodeData.paytmUrl" class="upi-icon-link">
+                                                            <img src="assets/images/paytm.png" alt="Paytm" class="upi-app-icon-large" title="Paytm">
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- App Not Installed Fallback for Mobile (Edge Case 2) -->
+                                                    <div class="upi-fallback-btn-wrap d-lg-none mt-1" *ngIf="qrCodeData.paymentUrl">
+                                                        <a [href]="qrCodeData.paymentUrl" class="btn btn-outline-dark btn-sm rounded-pill px-3 py-1 upi-generic-btn">
+                                                            <i class="ri-smartphone-line me-1"></i> Pay with any UPI App
+                                                        </a>
+                                                    </div>
+
+                                                    <!-- 5-Minute Countdown Badge -->
+                                                    <div class="upi-qr-timer mt-2">
+                                                        <p class="mb-0">This QR Code will expire in:</p>
+                                                        <i class="ri-timer-2-line timer-icon"></i>
+                                                        <span class="timer-digits">{{ upiMinutes }}:{{ upiSeconds }}</span>
+                                                    </div>
+
+                                                    <!-- Realtime Processing Spinner -->
+                                                    <div class="upi-qr-status mt-1">
+                                                        <div class="upi-spinner"></div>
+                                                        <span>Processing payment...</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </form>
                                     </ng-container>

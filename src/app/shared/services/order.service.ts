@@ -45,4 +45,21 @@ export class OrderService {
     });
   }
 
+  checkPaymentStatus(orderNumber: string, paymentMethod: string): Observable<any> {
+    if (
+      paymentMethod === 'jio_turnlifezest' ||
+      paymentMethod === 'jio_turnlifezest' ||
+      paymentMethod === 'turnlife_jio' ||
+      paymentMethod === 'payrise_mangalfashion_jio' ||
+      paymentMethod === 'mangalfashion_jio'
+    ) {
+      // For Jio UPI, status check is handled via polling the View Order API
+      return this.http.get<any>(`${environment.URL}/order/${orderNumber}`);
+    }
+
+    return this.http.get<any>(`${environment.URL}/check-payment-status`, {
+      params: { order_number: orderNumber, payment_method: paymentMethod }
+    });
+  }
+
 }

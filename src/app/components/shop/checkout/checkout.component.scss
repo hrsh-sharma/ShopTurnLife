@@ -860,3 +860,178 @@
 
 .gmail-btn { color: #EA4335; &:hover { border-color: #EA4335; } }
 .outlook-btn { color: #0078D4; &:hover { border-color: #0078D4; } }
+
+// Inline UPI QR Section (inside Order Summary)
+.upi-qr-inline-section {
+    margin: 1.25rem 0 0.5rem;
+    padding: 1.5rem 1.25rem;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    animation: fadeInQR 0.3s ease-in-out;
+
+    .upi-qr-heading {
+        width: 100%;
+        .upi-qr-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+            text-align: center;
+            letter-spacing: -0.2px;
+        }
+    }
+
+    .upi-qr-image-wrap {
+        background: #ffffff;
+        border: 1.5px solid #f1f3f5;
+        border-radius: 16px;
+        padding: 0.85rem;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .upi-qr-image {
+            width: 210px;
+            height: 210px;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+    }
+
+    .upi-qr-hint {
+        font-size: 0.88rem;
+        color: #6c757d;
+        margin: 0;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    // App icons in a horizontal row on mobile (d-lg-none handles breakpoint)
+    .upi-app-icons-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.1rem;
+
+        .upi-icon-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+
+            .upi-app-icon-large {
+                width: 52px;
+                height: 52px;
+                object-fit: contain;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+                background: #ffffff;
+                padding: 6px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+                &:hover, &:active {
+                    transform: translateY(-2px) scale(1.06);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                }
+            }
+        }
+    }
+
+    .upi-fallback-btn-wrap {
+        .upi-generic-btn {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #4b5563;
+            border-color: #d1d5db;
+            background: #f9fafb;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: #f3f4f6;
+                color: #111827;
+                border-color: #9ca3af;
+            }
+        }
+    }
+
+    // Yellow countdown pill badge
+    .upi-qr-timer {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #fef3c7;
+        border: 1.5px solid #f59e0b;
+        color: #92400e;
+        font-weight: 700;
+        font-size: 0.92rem;
+        padding: 0.45rem 1.25rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+
+        p {
+            font-weight: 700;
+            color: #92400e;
+            margin: 0;
+        }
+
+        .timer-icon {
+            font-size: 1.1rem;
+            color: #b45309;
+        }
+
+        .timer-digits {
+            font-size: 1.02rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #92400e;
+        }
+    }
+
+    // Processing spinner
+    .upi-qr-status {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 0.88rem;
+        color: #6b7280;
+        font-weight: 500;
+
+        .upi-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e5e7eb;
+            border-top-color: #f36431;
+            border-radius: 50%;
+            animation: upiSpinner 0.75s linear infinite;
+        }
+    }
+}
+
+@keyframes upiSpinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInQR {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, ElementRef, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ElementRef, TemplateRef, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../../shared/services/auth.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { Store, Select } from '@ngxs/store';
@@ -93,6 +93,22 @@ export class CheckoutComponent implements OnDestroy {
   private checkoutOtpModalRef: any;
   private pendingGuestItems: any[] = [];
 
+  // UPI QR Code and polling properties
+  public qrCodeData: any = null;
+  public upiCountdown: number = 0;
+  private timerSubscription: Subscription | null = null;
+  private qrCodeTimerInterval: any = null;
+  private visibilityChangeHandler: any = null;
+  private timerExpiresAt: number = 0;
+
+  get upiMinutes(): string {
+    return Math.floor(this.upiCountdown / 60).toString().padStart(2, '0');
+  }
+
+  get upiSeconds(): string {
+    return (this.upiCountdown % 60).toString().padStart(2, '0');
+  }
+
   // Calculate cart totals with shipping and tax as zero (shown regardless of login)
   getCalculatedTotals() {
     const items = this.store.selectSnapshot(CartState.cartItems) || [];
@@ -125,7 +141,8 @@ export class CheckoutComponent implements OnDestroy {
     private sanitizer: DomSanitizer,
     private orderService: OrderService,
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.otpForm = this.formBuilder.group({
       otp: new FormControl('', [Validators.required, Validators.minLength(6)])
@@ -485,7 +502,10 @@ export class CheckoutComponent implements OnDestroy {
               complete: () => {
                 this.store.dispatch(new GetCartItems()).subscribe({
                   complete: () => {
-                    window.location.reload();
+                    this.showLogin = false;
+                    // Navigate away then back to force full CheckoutComponent re-init
+                    // so constructor re-runs (GetSettingOption + logged-in form bindings)
+                    this.router.navigate(['/']).then(() => this.router.navigate(['/checkout']));
                   }
                 });
               }
@@ -493,7 +513,9 @@ export class CheckoutComponent implements OnDestroy {
           } else {
             this.store.dispatch(new GetCartItems()).subscribe({
               complete: () => {
-                window.location.reload();
+                this.showLogin = false;
+                // Navigate away then back to force full CheckoutComponent re-init
+                this.router.navigate(['/']).then(() => this.router.navigate(['/checkout']));
               }
             });
           }
@@ -577,6 +599,8 @@ export class CheckoutComponent implements OnDestroy {
         this.checkout(value);
         break;
       case 'turnlife_jio':
+      case 'jio_turnlifezest':
+      case 'jio_turnlifezest':
         this.checkout(value);
         break;
       default:
@@ -1075,7 +1099,7 @@ export class CheckoutComponent implements OnDestroy {
     });
   }
 
-  // Jio Payment Integration
+  // Jio Payment Integration (Pay by UPI/QR)
   initiateJioPaymentIntent(payment_method: string, uuid: any, order_result: any) {
     const userData = localStorage.getItem('account');
     const parsedUserData = JSON.parse(userData || '{}')?.user || {};
@@ -1092,29 +1116,207 @@ export class CheckoutComponent implements OnDestroy {
       email: parsedUserData.email,
       phone: parsedUserData.phone,
       uuid: payload.uuid,
+      order_number: order_result.order_number,
+      payment_method: payment_method || 'jio_turnlifezest',
+      payment_mode: payment_method || 'jio_turnlifezest',
+      address: `${parsedUserData.address?.[0]?.city || ''} ${parsedUserData.address?.[0]?.area || ''}`,
       surl: `${window.location.origin}/success?order_status=true&order_number=${order_result.order_number}`,
       furl: `${window.location.origin}/checkout?payment_status=failed&order_number=${order_result.order_number}`
     }).subscribe({
       next: (response) => {
         console.log('Jio initiate-payment full response:', JSON.stringify(response));
 
-        const paymentUrl = response?.payment_url || response?.redirect_url;
+        this.loading = false;
 
-        if (response?.R && paymentUrl) {
+        const qrCode = response?.Qrcode || response?.data?.Qrcode || response?.qrcode || response?.qrCode;
+        const paymentUrl = response?.url || response?.data?.url || response?.payment_url || response?.redirect_url;
+
+        if (response?.R && (qrCode || paymentUrl)) {
+          // Store payment info in session/local storage
           sessionStorage.setItem('payment_uuid', uuid);
           sessionStorage.setItem('payment_method', payment_method);
           sessionStorage.setItem('payment_action', JSON.stringify(this.form.value));
           localStorage.setItem('order_id', JSON.stringify(order_result.order_number));
 
+          const finalQrCode = qrCode || (paymentUrl ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(paymentUrl)}` : '');
+
+          // Open inline QR code card
+          this.openPaymentQRModal(finalQrCode, paymentUrl, order_result.order_number);
+
+          // Start polling for payment status (every 3 seconds for Jio UPI)
+          this.startPaymentStatusPolling(order_result.order_number, payment_method);
+        } else if (paymentUrl && !paymentUrl.startsWith('upi://')) {
+          // Fallback to direct URL redirection if web link provided
+          sessionStorage.setItem('payment_uuid', uuid);
+          sessionStorage.setItem('payment_method', payment_method);
+          sessionStorage.setItem('payment_action', JSON.stringify(this.form.value));
+          localStorage.setItem('order_id', JSON.stringify(order_result.order_number));
           window.location.href = paymentUrl;
         } else {
           console.error("Jio payment initiation failed:", response);
+          this.notificationService.showError(response?.msg || response?.message || 'Payment initiation failed. Please try again.');
         }
       },
       error: (err) => {
+        this.loading = false;
         console.log("Error initiating Jio payment:", err);
+        this.notificationService.showError('Error initiating payment. Please try again.');
       }
     });
+  }
+
+  openPaymentQRModal(qrCode: string, paymentUrl: string, orderNumber: string) {
+    const FIVE_MINUTES = 300;
+
+    this.qrCodeData = {
+      qrCode: qrCode,
+      paymentUrl: paymentUrl, // Generic (used for Android chooser or fallback button)
+      phonepeUrl: paymentUrl ? paymentUrl.replace('upi://pay?', 'phonepe://pay?') : '',
+      gpayUrl: paymentUrl ? paymentUrl.replace('upi://pay?', 'tez://pay?') : '',
+      paytmUrl: paymentUrl ? paymentUrl.replace('upi://pay?', 'paytmmp://pay?') : '',
+      orderNumber: orderNumber
+    };
+
+    this.startQRCodeTimer(FIVE_MINUTES);
+    this.cdr.detectChanges();
+  }
+
+  startQRCodeTimer(seconds: number = 300) {
+    this.stopQRCodeTimer();
+
+    // Edge Case 1: Tab suspension fix by calculating against absolute timestamp
+    this.timerExpiresAt = Date.now() + seconds * 1000;
+    this.upiCountdown = seconds;
+    this.cdr.detectChanges();
+
+    this.timerSubscription = interval(1000).subscribe(() => {
+      const remainingSeconds = Math.max(0, Math.floor((this.timerExpiresAt - Date.now()) / 1000));
+      this.upiCountdown = remainingSeconds;
+
+      if (this.upiCountdown <= 0) {
+        // QR expired
+        const orderNumber = this.qrCodeData?.orderNumber;
+        this.stopQRCodeTimer();
+        this.stopPaymentStatusPolling();
+        this.qrCodeData = null;
+
+        if (orderNumber) {
+          this.redirectToOrderSuccess(orderNumber);
+        }
+      }
+
+      this.cdr.detectChanges();
+    });
+
+    // Edge Case 1: visibilitychange listener for immediate payment verification when returning to browser
+    if (!this.visibilityChangeHandler) {
+      this.visibilityChangeHandler = () => {
+        if (document.visibilityState === 'visible' && this.qrCodeData?.orderNumber) {
+          const remainingSeconds = Math.max(0, Math.floor((this.timerExpiresAt - Date.now()) / 1000));
+          this.upiCountdown = remainingSeconds;
+          this.cdr.detectChanges();
+
+          this.checkPaymentStatusOnce(this.qrCodeData.orderNumber, this.payment_method);
+        }
+      };
+      document.addEventListener('visibilitychange', this.visibilityChangeHandler);
+    }
+  }
+
+  checkPaymentStatusOnce(orderNumber: string, paymentMethod: string) {
+    this.orderService.checkPaymentStatus(orderNumber, paymentMethod).subscribe({
+      next: (response: any) => {
+        this.handlePaymentStatusResponse(response, orderNumber);
+      },
+      error: (err: any) => {
+        console.warn('Error during immediate payment status check:', err);
+      }
+    });
+  }
+
+  handlePaymentStatusResponse(response: any, orderNumber: string) {
+    const paymentStatus = (response?.payment_status?.name || response?.payment_status || response?.data?.payment_status || '').toString().toLowerCase();
+    const orderStatus = (response?.order_status?.name || response?.order_status || response?.status || response?.data?.status || '').toString().toLowerCase();
+
+    if (
+      paymentStatus === 'paid' ||
+      paymentStatus === 'completed' ||
+      paymentStatus === 'success' ||
+      orderStatus === 'paid' ||
+      orderStatus === 'completed' ||
+      (response?.status === true && paymentStatus === 'paid') ||
+      (response?.R === true && response?.data?.payment_status === 'paid')
+    ) {
+      this.stopPaymentStatusPolling();
+      this.stopQRCodeTimer();
+      this.qrCodeData = null;
+
+      this.redirectToOrderSuccess(orderNumber);
+    }
+  }
+
+  startPaymentStatusPolling(orderNumber: string, paymentMethod: string) {
+    this.stopPaymentStatusPolling();
+
+    const isJioUPI = paymentMethod === 'turnlife_jio' ||
+                     paymentMethod === 'jio_turnlifezest' ||
+                     paymentMethod === 'jio_turnlifezest' ||
+                     paymentMethod === 'payrise_mangalfashion_jio' ||
+                     paymentMethod === 'mangalfashion_jio';
+    const intervalTime = isJioUPI ? 3000 : 2000;
+
+    const pollingInterval = setInterval(() => {
+      this.orderService.checkPaymentStatus(orderNumber, paymentMethod).subscribe({
+        next: (response: any) => {
+          this.handlePaymentStatusResponse(response, orderNumber);
+        },
+        error: (err: any) => {
+          console.warn('Error checking payment status:', err);
+        }
+      });
+    }, intervalTime);
+
+    this.pollingSubscription = new Subscription(() => clearInterval(pollingInterval));
+  }
+
+  stopPaymentStatusPolling() {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = null as any;
+    }
+  }
+
+  stopQRCodeTimer() {
+    if (this.qrCodeTimerInterval) {
+      clearInterval(this.qrCodeTimerInterval);
+      this.qrCodeTimerInterval = null;
+    }
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+      this.timerSubscription = null;
+    }
+    if (this.visibilityChangeHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+      this.visibilityChangeHandler = null;
+    }
+  }
+
+  redirectToOrderSuccess(orderNumber: string) {
+    const userData = localStorage.getItem('account');
+    const isGuest = !userData || !(JSON.parse(userData || '{}')?.user);
+
+    if (isGuest) {
+      const email = sessionStorage.getItem('payment_action') ?
+        JSON.parse(sessionStorage.getItem('payment_action') || '{}').email : '';
+      this.router.navigate(['order/details'], {
+        queryParams: {
+          order_number: orderNumber,
+          email_or_phone: email
+        }
+      });
+    } else {
+      this.router.navigateByUrl(`/account/order/details/${orderNumber}`);
+    }
   }
 
   // Shop Shop Turn Life Nabu Payment Integration
@@ -1426,7 +1628,11 @@ export class CheckoutComponent implements OnDestroy {
           if (this.payment_method === 'turnlife_nabu_airpay') {
             this.initiateAirpayPaymentIntent(this.payment_method, uuid, result);
           }
-          if (this.payment_method === 'turnlife_jio') {
+          if (
+            this.payment_method === 'jio_turnlifezest' ||
+            this.payment_method === 'jio_turnlifezest' ||
+            this.payment_method === 'turnlife_jio'
+          ) {
             this.initiateJioPaymentIntent(this.payment_method, uuid, result);
           }
           // Note: loading state is not reset here as payment flow continues
@@ -1449,8 +1655,8 @@ export class CheckoutComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    // Removed cart clearing on navigation - users should be able to go back to cart page
-    // this.store.dispatch(new ClearCart());
+    this.stopQRCodeTimer();
+    this.stopPaymentStatusPolling();
     this.modalService.dismissAll();
     this.form.reset();
     this.pollingSubscription && this.pollingSubscription.unsubscribe();
