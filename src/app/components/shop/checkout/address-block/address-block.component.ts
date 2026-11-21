@@ -14,7 +14,7 @@ export class AddressBlockComponent {
   @Output() selectAddress: EventEmitter<number> = new EventEmitter();
 
   constructor() { }
-  
+
   ngOnChanges() {
     // Automatically emit the selectAddress event for the first item if it's available
     if (this.addresses && this.addresses.length > 0) {

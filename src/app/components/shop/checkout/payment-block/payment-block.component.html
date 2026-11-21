@@ -2,11 +2,8 @@
     <div class="payment-grid">
         <ng-container *ngFor="let payment of setting.payment_methods; let i = index; trackBy: trackByPaymentMethod">
             <div class="payment-card-wrapper" *ngIf="payment?.status">
-                <input class="payment-radio-input"
-                       type="radio"
-                       name="payment_method"
-                       [id]="'payment_' + payment.name"
-                       (change)="set(payment.name)">
+                <input class="payment-radio-input" type="radio" name="payment_method" [id]="'payment_' + payment.name"
+                    (change)="set(payment.name)">
                 <label class="payment-label" [attr.for]="'payment_' + payment.name">
                     <div class="payment-card">
                         <!-- Radio circle on the LEFT -->
@@ -17,14 +14,9 @@
                         <div class="payment-info">
                             <span class="payment-title">{{ payment.title || payment.name }}</span>
                             <img *ngIf="payment.name === 'turnlife_jio' || payment.name === 'jio_turnlifezest' || payment.name === 'jio_turnlifezest'"
-                                 src="assets/images/QR-code.png"
-                                 alt="QR Code"
-                                 class="payment-icon-qr">
-                            <img *ngIf="payment.icon"
-                                 [src]="payment.icon"
-                                 [alt]="payment.name"
-                                 class="payment-icon"
-                                 [class.payment-icon-jio]="payment.name === 'turnlife_jio' || payment.name === 'jio_turnlifezest' || payment.name === 'jio_turnlifezest'">
+                                src="assets/images/QR-code.png" alt="QR Code" class="payment-icon-qr">
+                            <img *ngIf="payment.icon" [src]="payment.icon" [alt]="payment.name" class="payment-icon"
+                                [class.payment-icon-jio]="payment.name === 'turnlife_jio' || payment.name === 'jio_turnlifezest' || payment.name === 'jio_turnlifezest'">
                         </div>
                     </div>
                 </label>

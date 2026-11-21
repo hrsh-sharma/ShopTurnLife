@@ -194,6 +194,9 @@ export class RegisterComponent implements OnDestroy {
             keyboard: false,
             windowClass: 'otp-verify-modal'
           });
+        },
+        error: (err) => {
+          this.notificationService.showError(err?.message || 'Registration failed. Please try again.');
         }
       });
     }

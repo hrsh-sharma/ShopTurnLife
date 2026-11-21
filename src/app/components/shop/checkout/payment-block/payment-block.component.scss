@@ -19,7 +19,7 @@
         height: 0;
 
         // When selected → highlight card + fill radio dot
-        &:checked + .payment-label {
+        &:checked+.payment-label {
             .payment-card {
                 border-color: var(--theme-color, #275E5E);
                 background: rgba(39, 94, 94, 0.04);
